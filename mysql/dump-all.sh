@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 
 ##
 # Dump all mysql databases at once
@@ -210,4 +210,3 @@ fi
 dadb_dump_databases $DADB_USER $DADB_HOST $DADB_DIR $DADB_INCLUDE_SYS_TBL
 
 dadb_unset_vars
-return 0
