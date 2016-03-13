@@ -2,6 +2,9 @@
 # some scripting test
 #
 
+# force strict variable handling
+set -u
+
 #clears the screen
 clear
 
