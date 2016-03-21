@@ -13,7 +13,7 @@ CURRENT_DIR=$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )
 if [ ! -d "$BACKUP_DIR" ]
 then
 	echo "Error: Backup device not found"
-	return 1
+	exit 1
 fi
 
 if [ ! -d ~/bak ]
