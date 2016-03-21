@@ -3,18 +3,23 @@
 set -u
 
 ## Nummeric array
-LIST=(
-	"foo"
-	"bar"
-	"bazz"
+declare -a LIST=(
+	"one"
+	"two"
+	"three"
 )
 
 ## access
-echo ${LIST[*]} # foo bar bazz
-echo ${LIST[1]} # bar
+echo ${LIST[*]} # one two three
+echo ${LIST[1]} # two
 
-LIST[0]='bar' # replaces 'foo' with 'bar'
-unset LIST[2] # unsets 'bazz'
+LIST[0]='three' # replaces 'one' with 'three'
+unset LIST[2] # unsets 'three'
+
+## iteration
+for ELEMENT in ${LIST[@]};do
+	echo $ELEMENT
+done
 
 
 ## declare an associative array
