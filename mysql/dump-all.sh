@@ -35,7 +35,7 @@ OPTIONS
 if [[ $# -eq 0 ]]
 then
 	dadb_help
-	return 1;
+	exit 1;
 fi
 
 ##
@@ -178,14 +178,14 @@ if [[ $DADB_ERROR == "true" ]]
 then
 	echo -e "Error: $DADB_MSG"
 	dadb_unset_vars
-	return 1
+	exit 1
 fi
 
 if [[ $DADB_HELP == "true" ]]
 then
 	dadb_help
 	dadb_unset_vars
-	return 0
+	exit 0
 fi
 
 if [[ -z $DADB_USER ]]
@@ -204,7 +204,7 @@ if [[ ! -d $DADB_DIR ]]
 then
 	echo "Directory '$DADB_DIR' does not exist"
 	dadb_unset_vars
-	return 1
+	exit 1
 fi
 
 dadb_dump_databases $DADB_USER $DADB_HOST $DADB_DIR $DADB_INCLUDE_SYS_TBL
