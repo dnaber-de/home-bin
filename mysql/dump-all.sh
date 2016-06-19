@@ -104,7 +104,7 @@ dadb_dump_databases()
 	)
 
 
-	local DATABASES=$(mysql -u $USER -h $HOST -p$PASSWD -Bse "SHOW DATABASES;")
+	local DATABASES=$(mysql -u "$USER" -h "$HOST" -p"$PASSWD" -Bse "SHOW DATABASES;")
 
 	for DADB_DB in $DATABASES
 	do
@@ -119,7 +119,7 @@ dadb_dump_databases()
 
 		local FILE="$DIR/$DADB_DB.sql"
 		echo "Dumping $DADB_DB ..."
-		mysqldump -u $USER -h $HOST -p$PASSWD $DADB_DB > $FILE
+		mysqldump -u "$USER" -h "$HOST" -p"$PASSWD" "$DADB_DB" > "$FILE"
 
 	done
 	unset DADB_DB
@@ -207,6 +207,6 @@ then
 	exit 1
 fi
 
-dadb_dump_databases $DADB_USER $DADB_HOST $DADB_DIR $DADB_INCLUDE_SYS_TBL
+dadb_dump_databases "$DADB_USER" "$DADB_HOST" "$DADB_DIR" "$DADB_INCLUDE_SYS_TBL"
 
 dadb_unset_vars
