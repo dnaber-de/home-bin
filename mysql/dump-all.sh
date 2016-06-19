@@ -98,8 +98,8 @@ dadb_dump_databases()
 	dadb_read_pw_into PASSWD
 
 	local SYSTEM_TABLES=(
-		"information_schema",
-		"performance_schema",
+		"information_schema"
+		"performance_schema"
 		"mysql"
 	)
 
