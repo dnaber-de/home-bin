@@ -6,7 +6,7 @@
 set -u
 
 BACKUP_DIR="/media/david/wppassport/1404"
-CURRENT_WD=`pwd`
+CURRENT_WD=$(pwd)
 CURRENT_DIR=$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )
 
 # check if the backup device is available
