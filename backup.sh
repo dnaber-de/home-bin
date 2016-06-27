@@ -26,7 +26,9 @@ echo "Building ~/packages.list …"
 dpkg --get-selections | awk '!/deinstall|purge|hold/ {print $1}' > ~/bak/packages.list
 
 echo "Building ~/sources.list …"
-find /etc/apt/sources.list* -type f -name '*.list' -exec bash -c 'echo -e "\n## $1 ";grep "^[[:space:]]*[^#[:space:]]" ${1}' _ {} \; > ~/bak/sources.list
+find /etc/apt/sources.list* -type f -name '*.list' \
+	-exec bash -c "echo -e \"\n## \$1 \";grep \"^[[:space:]]*[^#[:space:]]\" \${1}" _ {} \; \
+	> ~/bak/sources.list
 
 ##
 # Backing up /root
