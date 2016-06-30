@@ -67,7 +67,7 @@ if [[ -f "$VHOST_CONF_FILE" ]]; then
 	exit 1
 fi
 
-cp "$TEMPLATE" "$TMP_CONF_FILE"
+mv "$TEMPLATE" "$TMP_CONF_FILE"
 
 # Replace placeholder in temprary config file
 sed -i "s~%HOSTNAME%~$HOSTNAME~g" "$TMP_CONF_FILE"
