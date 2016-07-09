@@ -30,12 +30,10 @@ echo "Project handle?"
 read HANDLE
 validate "$HANDLE" "Handle"
 
-echo "Project alias (leave empty to use handle)?"
+echo "Project alias (leave empty to skip alias creation)?"
 read ALIAS
 if [[ '' != "$ALIAS" ]]; then
 	validate "$ALIAS" "Alias"
-else
-	ALIAS=$HANDLE
 fi
 
 echo "Project path (document root)?"
@@ -75,18 +73,30 @@ sed -i "s~%DOCROOT%~$DOCROOT~g" "$TMP_CONF_FILE"
 sed -i "s~%HANDLE%~$HANDLE~g" "$TMP_CONF_FILE"
 
 # Move temp file to vhost conf file and reload apache2
-mv -v "$TMP_CONF_FILE" "$VHOST_CONF_FILE"
-a2ensite "$VHOST_CONF_FILE"
-service apache2 reload
+sudo mv -v "$TMP_CONF_FILE" "$VHOST_CONF_FILE"
+sudo chown root:root "$VHOST_CONF_FILE"
+sudo a2ensite "$HANDLE.conf"
+sudo service apache2 reload
 
 printf "<h1>It works</h1>" > "$DOCROOT/index.html"
 touch "$DOCROOT/.htaccess"
 
-if [[ '' == "$MYSQL_HANDLE" ]]; then
-	exit 0
+
+# Create alias
+if [[ '' != $ALIAS ]]; then
+	ALIAS_FILE=~/.bash_aliases
+	ALIAS_EXIST=$(grep "alias $ALIAS=" "$ALIAS_FILE")
+	if [[ '' == "$ALIAS_EXIST" ]];then
+		echo "alias $ALIAS='cd $DOCROOT'" >> "$ALIAS_FILE"
+	fi
 fi
 
 # Create MySQL db
+
+if [[ '' == "$MYSQL_HANDLE" ]]; then
+        exit 0
+fi
+
 DB_CONF_FILE="$DOCROOT/.my.cnf"
 if [[ -f "$DB_CONF_FILE" ]]; then
 	exit 0
