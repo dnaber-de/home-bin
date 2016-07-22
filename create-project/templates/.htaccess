@@ -1,0 +1,5 @@
+# Deny access on .my.cnf file
+# Requires Apache 2.4
+<FilesMatch "^\.my.*$">
+        Require all denied
+</FilesMatch>

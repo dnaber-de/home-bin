@@ -54,6 +54,8 @@ fi
 if [[ ! -d "$DOCROOT" ]]; then
 	mkdir -pv "$DOCROOT"
 fi
+# Copy .htaccess template to doc-root
+cp "$CURRENT_DIR/templates/.htaccess" "$DOCROOT/.htaccess"
 
 # Copy VHOST config template
 TMP_CONF_FILE="$CURRENT_DIR/templates/$HANDLE.conf"
