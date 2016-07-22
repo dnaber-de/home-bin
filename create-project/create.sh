@@ -58,14 +58,14 @@ fi
 # Copy VHOST config template
 TMP_CONF_FILE="$CURRENT_DIR/templates/$HANDLE.conf"
 VHOST_CONF_FILE="/etc/apache2/sites-available/$HANDLE.conf"
-TEMPLATE="$CURRENT_DIR/templates/vhost.conf"
+VHOST_TEMPLATE="$CURRENT_DIR/templates/vhost.conf"
 
 if [[ -f "$VHOST_CONF_FILE" ]]; then
 	echo "Error: VHost config file already exists: $VHOST_CONF_FILE"
 	exit 1
 fi
 
-cp "$TEMPLATE" "$TMP_CONF_FILE"
+cp "$VHOST_TEMPLATE" "$TMP_CONF_FILE"
 
 # Replace placeholder in temprary config file
 sed -i "s~%HOSTNAME%~$HOSTNAME~g" "$TMP_CONF_FILE"
