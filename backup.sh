@@ -53,7 +53,7 @@ fi
 if [ -f "$CURRENT_DIR/mysql/dump-all.sh" ]
 then
     cd "$CURRENT_DIR"
-    ./mysql/dump-all.sh -u root -h localhost "$BACKUP_DIR/mysql"
+    ./mysql/dump-all.sh -u root -h localhost "$BACKUP_DIR/mysql" --include-system-tables
 else
     echo "MySQL dump script is not available. Skipping …"
 fi
