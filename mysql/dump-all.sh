@@ -13,7 +13,7 @@ set -u
 #
 dadb_help()
 {
-	echo "Dump all mysql databases
+	echo "Dump all mysql content databases
 
 USAGE
 	sh dump-all-databases.sh [OPTIONS] DIRECTORY
@@ -26,10 +26,7 @@ OPTIONS
 
 	-h,--host DB Host for the mysqldump command, default to 'localhost'
 
-	--help Print this help message
-
-	--include-system-tables Includes system tables information_schema,
-	performance_schema and mysql"
+	--help Print this help message"
 }
 
 if [[ $# -eq 0 ]]
@@ -44,7 +41,6 @@ fi
 dadb_declare_vars()
 {
 	DADB_HELP=""
-	DADB_INCLUDE_SYS_TBL=false
 	DADB_USER=""
 	DADB_HOST=""
 	DADB_DIR=""
@@ -59,7 +55,6 @@ dadb_declare_vars
 dadb_unset_vars()
 {
 	unset DADB_HELP
-	unset DADB_INCLUDE_SYS_TBL
 	unset DADB_USER
 	unset DADB_HOST
 	unset DADB_DIR
@@ -85,14 +80,12 @@ dadb_read_pw_into()
 # @param $1 user
 # @param $2 host
 # @param $3 dir
-# @param $4 true|false whether to exclude/include system tables
 #
 dadb_dump_databases()
 {
 	local USER="$1"
 	local HOST="$2"
 	local DIR="$3"
-	local INCLUDE_SYS_TBL="$4"
 	local PASSWD=""
 	#local DATE=$(date +%F-%T)
 	dadb_read_pw_into PASSWD
@@ -108,13 +101,10 @@ dadb_dump_databases()
 
 	for DADB_DB in $DATABASES
 	do
-		if [[ "$INCLUDE_SYS_TBL" != "true" ]]
+		if [[ "$DADB_DB" == 'information_schema' || "$DADB_DB" == 'performance_schema' || "$DADB_DB" == 'mysql' ]]
 		then
-			if [[ "$DADB_DB" == 'information_schema' || "$DADB_DB" == 'performance_schema' || "$DADB_DB" == 'mysql' ]]
-			then
-				echo "Info: Skip database $DADB_DB"
-				continue
-			fi
+			echo "Info: Skip database $DADB_DB"
+			continue
 		fi
 
 		local FILE="$DIR/$DADB_DB.sql"
@@ -146,11 +136,6 @@ do
 
 		--help)
 		DADB_HELP=true
-		shift
-		;;
-
-		--include-system-tables)
-		DADB_INCLUDE_SYS_TBL=true
 		shift
 		;;
 
@@ -207,6 +192,6 @@ then
 	exit 1
 fi
 
-dadb_dump_databases "$DADB_USER" "$DADB_HOST" "$DADB_DIR" "$DADB_INCLUDE_SYS_TBL"
+dadb_dump_databases "$DADB_USER" "$DADB_HOST" "$DADB_DIR"
 
 dadb_unset_vars
