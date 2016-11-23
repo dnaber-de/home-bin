@@ -26,7 +26,9 @@ OPTIONS
 
 	-h,--host DB Host for the mysqldump command, default to 'localhost'
 
-	--help Print this help message"
+	-g        Gzip the resulting files
+
+	--help    Print this help message"
 }
 
 if [[ $# -eq 0 ]]
@@ -46,6 +48,7 @@ dadb_declare_vars()
 	DADB_DIR=""
 	DADB_ERROR=false
 	DADB_MSG=""
+	DADB_GZIP=false
 }
 dadb_declare_vars
 
@@ -60,6 +63,7 @@ dadb_unset_vars()
 	unset DADB_DIR
 	unset DADB_ERROR
 	unset DADB_MSG
+	unset DADB_GZIP
 }
 
 ##
@@ -80,12 +84,14 @@ dadb_read_pw_into()
 # @param $1 user
 # @param $2 host
 # @param $3 dir
+# @param $4 gzip
 #
 dadb_dump_databases()
 {
 	local USER="$1"
 	local HOST="$2"
 	local DIR="$3"
+	local GZIP="$4"
 	local PASSWD=""
 	#local DATE=$(date +%F-%T)
 	dadb_read_pw_into PASSWD
@@ -110,6 +116,12 @@ dadb_dump_databases()
 		local FILE="$DIR/$DADB_DB.sql"
 		echo "Dumping $DADB_DB ..."
 		mysqldump -u "$USER" -h "$HOST" -p"$PASSWD" "$DADB_DB" > "$FILE"
+
+		if [[ "$GZIP" == 'true' ]]
+		then
+			echo "Compressing $FILE"
+			gzip -f "$FILE"
+		fi
 
 	done
 	unset DADB_DB
@@ -148,6 +160,11 @@ do
 		-h|--host)
 		DADB_HOST="$2"
 		shift
+		shift
+		;;
+
+		-g)
+		DADB_GZIP=true
 		shift
 		;;
 
@@ -192,6 +209,6 @@ then
 	exit 1
 fi
 
-dadb_dump_databases "$DADB_USER" "$DADB_HOST" "$DADB_DIR"
+dadb_dump_databases "$DADB_USER" "$DADB_HOST" "$DADB_DIR" "$DADB_GZIP"
 
 dadb_unset_vars
