@@ -8,6 +8,21 @@ set -u
 BACKUP_DIR="/media/david/wppassport/1404"
 CURRENT_WD=$(pwd)
 CURRENT_DIR=$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )
+MYSQL_PASSWD=""
+
+##
+# @param $1 a variable reference to read the password in
+#
+read_pw_into()
+{
+	TMP_PASSWD=''
+	echo  "Insert MySQL Password for user 'root'@'localhost':"
+	read -s TMP_PASSWD
+	eval "$1=\"$TMP_PASSWD\""
+	unset TMP_PASSWD
+}
+
+read_pw_into MYSQL_PASSWD
 
 # check if the backup device is available
 if [[ ! -d "$BACKUP_DIR" ]]; then
@@ -48,14 +63,14 @@ fi
 
 if [[ -f "$CURRENT_DIR/mysql/dump-all.sh" ]]; then
     cd "$CURRENT_DIR"
-    ./mysql/dump-all.sh -u root -h localhost -g "$BACKUP_DIR/mysql"
+    ./mysql/dump-all.sh -u root -h localhost  -p "$MYSQL_PASSWD" -g "$BACKUP_DIR/mysql"
 else
     echo "MySQL dump script is not available. Skip …"
 fi
 
 if [[ -f "$CURRENT_DIR/mysql/dump-grants.sh" ]]; then
 	cd "$CURRENT_DIR"
-	./mysql/dump-grants.sh -u root -h localhost -g "$BACKUP_DIR/mysql/mysql_grants.sql"
+	./mysql/dump-grants.sh -u root -h localhost -p "$MYSQL_PASSWD" -g "$BACKUP_DIR/mysql/mysql_grants.sql"
 else
 	echo "MySQL dump grant script is not available. Skip …"
 fi
