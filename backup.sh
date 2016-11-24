@@ -53,6 +53,13 @@ else
     echo "MySQL dump script is not available. Skip …"
 fi
 
+if [[ -f "$CURRENT_DIR/mysql/dump-grants.sh" ]]; then
+	cd "$CURRENT_DIR"
+	./mysql/dump-grants.sh -u root -h localhost -g "$BACKUP_DIR/mysql/mysql_grants.sql"
+else
+	echo "MySQL dump grant script is not available. Skip …"
+fi
+
 ##
 # Backing up /etc
 #
