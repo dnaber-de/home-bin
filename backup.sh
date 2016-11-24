@@ -10,14 +10,12 @@ CURRENT_WD=$(pwd)
 CURRENT_DIR=$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )
 
 # check if the backup device is available
-if [ ! -d "$BACKUP_DIR" ]
-then
+if [[ ! -d "$BACKUP_DIR" ]]; then
 	echo "Error: Backup device not found"
 	exit 1
 fi
 
-if [ ! -d ~/bak ]
-then
+if [[ ! -d ~/bak ]]; then
 	echo "Creating ~/bak directory"
 	mkdir ~/bak
 fi
@@ -33,8 +31,7 @@ find /etc/apt/sources.list* -type f -name '*.list' \
 ##
 # Backing up /root
 #
-if [ -d "$BACKUP_DIR/root" ]
-then
+if [[ -d "$BACKUP_DIR/root" ]]; then
     echo "Starting backup /root …"
     rsync -a /root/  "$BACKUP_DIR/root/"
 else
@@ -44,14 +41,12 @@ fi
 ##
 # Backing up /var/mysql
 #
-if [ ! -d "$BACKUP_DIR/mysql" ]
-then
+if [[ ! -d "$BACKUP_DIR/mysql" ]]; then
     echo "Creating backup directory /mysql …"
     mkdir "$BACKUP_DIR/mysql"
 fi
 
-if [ -f "$CURRENT_DIR/mysql/dump-all.sh" ]
-then
+if [[ -f "$CURRENT_DIR/mysql/dump-all.sh" ]]; then
     cd "$CURRENT_DIR"
     ./mysql/dump-all.sh -u root -h localhost -g "$BACKUP_DIR/mysql"
 else
@@ -61,8 +56,7 @@ fi
 ##
 # Backing up /etc
 #
-if [ -d "$BACKUP_DIR/etc" ]
-then
+if [[ -d "$BACKUP_DIR/etc" ]]; then
     echo "Starting backup /etc …"
     rsync -a /etc/ "$BACKUP_DIR/etc/"
 else
@@ -72,8 +66,7 @@ fi
 ##
 # Backing up /opt
 #
-if [ -d "$BACKUP_DIR/opt" ]
-then
+if [[ -d "$BACKUP_DIR/opt" ]]; then
     echo "Starting backup /opt …"
     rsync -a /opt/ "$BACKUP_DIR/opt/"
 else
@@ -83,8 +76,7 @@ fi
 ##
 # Backing up /home/david
 #
-if [ -d "$BACKUP_DIR/home/david" ]
-then
+if [[ -d "$BACKUP_DIR/home/david" ]]; then
     echo "Starting backup /home/david …"
     # CD to /home as there is the .rsync-filter file
     cd /home
@@ -97,8 +89,7 @@ fi
 ##
 # Backing up /var/www
 #
-if [ -d "$BACKUP_DIR/var/www" ]
-then
+if [[ -d "$BACKUP_DIR/var/www" ]]; then
     echo "Starting backup /var/www …"
     cd /var/www
     rsync -aF ./ "$BACKUP_DIR/var/www/"
