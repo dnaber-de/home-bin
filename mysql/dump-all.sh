@@ -26,6 +26,9 @@ OPTIONS
 
 	-h,--host DB Host for the mysqldump command, default to 'localhost'
 
+	-p,--password
+	          DB Password. Will be prompted if not specified.
+
 	-g        Gzip the resulting files
 
 	--help    Print this help message"
@@ -49,6 +52,7 @@ dadb_declare_vars()
 	DADB_ERROR=false
 	DADB_MSG=""
 	DADB_GZIP=false
+	DADB_PASSWD=""
 }
 dadb_declare_vars
 
@@ -64,6 +68,7 @@ dadb_unset_vars()
 	unset DADB_ERROR
 	unset DADB_MSG
 	unset DADB_GZIP
+	unset DADB_PASSWD
 }
 
 ##
@@ -85,6 +90,7 @@ dadb_read_pw_into()
 # @param $2 host
 # @param $3 dir
 # @param $4 gzip
+# @param $5 passwd
 #
 dadb_dump_databases()
 {
@@ -94,7 +100,12 @@ dadb_dump_databases()
 	local GZIP="$4"
 	local PASSWD=""
 	#local DATE=$(date +%F-%T)
-	dadb_read_pw_into PASSWD
+
+	if [[ -z $5 ]]; then
+		dadb_read_pw_into PASSWD
+	else
+		PASSWD="$5"
+	fi
 
 	local SYSTEM_TABLES=(
 		"information_schema"
@@ -163,6 +174,12 @@ do
 		shift
 		;;
 
+		-p|--password)
+		DADB_PASSWD="$2"
+		shift
+		shift
+		;;
+
 		-g)
 		DADB_GZIP=true
 		shift
@@ -209,6 +226,6 @@ then
 	exit 1
 fi
 
-dadb_dump_databases "$DADB_USER" "$DADB_HOST" "$DADB_DIR" "$DADB_GZIP"
+dadb_dump_databases "$DADB_USER" "$DADB_HOST" "$DADB_DIR" "$DADB_GZIP" "$DADB_PASSWD"
 
 dadb_unset_vars
