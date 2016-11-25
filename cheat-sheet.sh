@@ -15,7 +15,7 @@ clear
 # Special system vars
 #
 #    $?
-#    stores the error code of the last command
+#    stores the return code of the last command
 # e.g.
 # $ rm unknownfile
 # $ echo $? -> 1
@@ -39,8 +39,8 @@ clear
 # variable declaration
 x=6
 y=3
-z=`expr $x + $y`
-date=`date`
+z=$(expr $x + $y)
+date=$(date)
 
 
 echo "Sum of $x and $y is $z"
@@ -56,18 +56,17 @@ echo "Today is $date"
 #echo "First argument: $1"
 
 # conditional stuff
-if [ -d "/media/wppassport" ]
-	then
-		echo 'Directory exists'
-	else
-		echo 'Directory does not exist'
+if [[ -d "/media/wppassport" ]]; then
+
+	echo 'Directory exists'
+else
+	echo 'Directory does not exist'
 fi
 
-if [ $USER != "root" ]
-	then
-		echo 'you are not root'
-	else
-		echo 'you are root'
+if [[ $USER != "root" ]]; then
+	echo 'you are not root'
+else
+	echo 'you are root'
 fi
 
 ## functions
@@ -81,13 +80,13 @@ fi
  #
 myfunction()
 {
-	if [ $# -eq 2 ]
-	then
+	if [[ $# -eq 2 ]]; then
 		echo "Argument 1 is: $1"
 		echo "Argument 2 is: $2"
 	else
 		echo "Missing Arguments for function $0"
 	fi
+
 	return
 }
 myfunction ~ -bar
