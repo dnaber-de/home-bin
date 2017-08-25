@@ -19,3 +19,7 @@ $ bin/dump-grants.sh /path/to/mysql_grants.sql
 Will export all users and their capabilites to the specified file.
 
 See `$ bin/dump-grants -h` for more information
+
+## Resources
+
+https://vaneyckt.io/posts/safer_bash_scripts_with_set_euxo_pipefail/

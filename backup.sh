@@ -3,7 +3,7 @@
 # create backups on /media/david/wppassport/1404
 
 # force strict variable handling (declaration)
-set -u
+set -euo pipefail
 
 BACKUP_DIR="/media/david/wppassport/1404"
 CURRENT_WD=$(pwd)
