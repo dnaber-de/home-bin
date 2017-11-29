@@ -1,0 +1,36 @@
+#!/usr/bin/env bash
+
+set -euo pipefail
+
+## Enable debugging output
+# Checks if a variable is set (otherwise set -u would make this fail)
+# see https://stackoverflow.com/a/13864829/2169046
+if [[ ! -z "${BASH_DEBUG+x}" ]]; then
+    set -x
+fi
+
+WPCLI_BIN=$(which wp);
+WPCLI_VERSION=$(wp --version);
+
+echo "Current bin: ${WPCLI_BIN}"
+echo "Current verson: ${WPCLI_VERSION}"
+
+if [[ -f "/tmp/wp-cli.phar" ]]; then
+	rm "/tmp/wp-cli.phar"
+fi
+
+(cd /tmp; wget https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli.phar)
+
+chmod +x /tmp/wp-cli.phar
+
+NEW_WPCLI_VERSION=$(/tmp/wp-cli.phar --version)
+
+if [[ "${WPCLI_VERSION}" == "${NEW_WPCLI_VERSION}" ]]; then
+	echo "Nothing to update"
+	rm "/tmp/wp-cli.phar"
+	exit 0
+fi
+
+sudo rm "/opt/wp-cli/wp-cli.phar"
+sudo mv "/tmp/wp-cli.phar" "/opt/wp-cli/wp-cli.phar"
+wp --info
