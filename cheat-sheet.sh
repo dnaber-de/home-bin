@@ -9,6 +9,9 @@ set -euxo pipefail
 #clears the screen
 clear
 
+# see https://gist.github.com/tvlooy/cbfbdb111a4ebad8b93e
+CURRENT_DIRECTORY=$(dirname $(readlink -f "\${0}"))
+
 # system variables
 # allways upper case
 # e.g. $USER
