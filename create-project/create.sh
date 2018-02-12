@@ -1,16 +1,16 @@
 #!/usr/bin/env bash
 
 # Force scrict variable handling
-set -u
+set -euo pipefail
 
-CURRENT_DIR=$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )
+CURRENT_DIR=$(dirname $(readlink -f "${0}"))
 
 ##
 # Validates a string to be not empty or containing spaces
 #
 # @param value
-# @param var_name 
-# 
+# @param var_name
+#
 validate()
 {
 
@@ -36,13 +36,15 @@ if [[ '' != "$ALIAS" ]]; then
 	validate "$ALIAS" "Alias"
 fi
 
-echo "Project path (document root)?"
-read DOCROOT
-validate "$DOCROOT" "Document root"
+echo "Project path?"
+read PROJECT_ROOT
+validate "$PROJECT_ROOT" "Project path"
+
+DOCROOT="${PROJECT_ROOT}/public"
 
 echo "Hostname?"
-read HOSTNAME
-validate "$HOSTNAME" "Hostname"
+read PROJECT_HOSTNAME
+validate "$PROJECT_HOSTNAME" "Hostname"
 
 echo "MySQL Handle (leave empty to skip MySQL setup)?"
 read MYSQL_HANDLE
@@ -51,6 +53,10 @@ if [[ '' != "$MYSQL_HANDLE" ]]; then
 fi
 
 # Create document root
+if [[ ! -d "$PROJECT_ROOT" ]]; then
+	mkdir -pv "$PROJECT_ROOT"
+fi
+
 if [[ ! -d "$DOCROOT" ]]; then
 	mkdir -pv "$DOCROOT"
 fi
@@ -70,7 +76,7 @@ fi
 cp "$VHOST_TEMPLATE" "$TMP_CONF_FILE"
 
 # Replace placeholder in temprary config file
-sed -i "s~%HOSTNAME%~$HOSTNAME~g" "$TMP_CONF_FILE"
+sed -i "s~%HOSTNAME%~$PROJECT_HOSTNAME~g" "$TMP_CONF_FILE"
 sed -i "s~%DOCROOT%~$DOCROOT~g" "$TMP_CONF_FILE"
 sed -i "s~%HANDLE%~$HANDLE~g" "$TMP_CONF_FILE"
 
@@ -89,7 +95,7 @@ if [[ '' != $ALIAS ]]; then
 	ALIAS_FILE=~/.bash_aliases
 	ALIAS_EXIST=$(grep "alias $ALIAS=" "$ALIAS_FILE")
 	if [[ '' == "$ALIAS_EXIST" ]];then
-		echo "alias $ALIAS='cd $DOCROOT'" >> "$ALIAS_FILE"
+		echo "alias $ALIAS='cd $PROJECT_ROOT'" >> "$ALIAS_FILE"
 	fi
 fi
 
@@ -99,7 +105,7 @@ if [[ '' == "$MYSQL_HANDLE" ]]; then
         exit 0
 fi
 
-DB_CONF_FILE="$DOCROOT/.my.cnf"
+DB_CONF_FILE="$PROJECT_ROOT/.my.cnf"
 if [[ -f "$DB_CONF_FILE" ]]; then
 	exit 0
 fi
