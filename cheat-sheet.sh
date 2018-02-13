@@ -95,4 +95,7 @@ myfunction()
 }
 myfunction ~ -bar
 
+# show diffs of two directories in VIM for colored output
+diff -u <(ls -A1 dir1/) <(ls -A1 dir2/) | vim -R -
+
 exit 0
