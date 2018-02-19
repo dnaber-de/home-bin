@@ -26,11 +26,11 @@ validate()
 }
 
 
-echo "Project handle?"
+echo "Project handle (used as virual host config file name)?"
 read HANDLE
 validate "$HANDLE" "Handle"
 
-echo "Project alias (leave empty to skip alias creation)?"
+echo "Project alias (for ~/.bash_aliases, leave empty to skip alias creation)?"
 read ALIAS
 if [[ '' != "$ALIAS" ]]; then
 	validate "$ALIAS" "Alias"
