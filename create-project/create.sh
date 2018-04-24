@@ -3,6 +3,10 @@
 # Force scrict variable handling
 set -euo pipefail
 
+if [[ -z ${DEPLOY_DEBUG+x} ]]; then
+	set -x
+fi
+
 CURRENT_DIR=$(dirname $(readlink -f "${0}"))
 
 ##
@@ -14,15 +18,15 @@ CURRENT_DIR=$(dirname $(readlink -f "${0}"))
 validate()
 {
 
-        if [[ '' == "${1}" ]]; then
-                echo "${2} must not be empty"
-                exit 1
-        fi
+	if [[ '' == "${1}" ]]; then
+		echo "${2} must not be empty"
+		exit 1
+	fi
 
-        if [[ ${1} =~ ( ) ]]; then
-                echo "${2} must not contain spaces"
-                exit 1
-        fi
+	if [[ ${1} =~ ( ) ]]; then
+		echo "${2} must not contain spaces"
+		exit 1
+	fi
 }
 
 
@@ -75,7 +79,7 @@ fi
 
 cp "${VHOST_TEMPLATE}" "${TMP_CONF_FILE}"
 
-# Replace placeholder in temprary config file
+# Replace placeholder in temporary config file
 sed -i "s~%HOSTNAME%~${PROJECT_HOSTNAME}~g" "${TMP_CONF_FILE}"
 sed -i "s~%DOCROOT%~${DOCROOT}~g" "${TMP_CONF_FILE}"
 sed -i "s~%HANDLE%~${HANDLE}~g" "${TMP_CONF_FILE}"
@@ -93,16 +97,20 @@ touch "${DOCROOT}/.htaccess"
 # Create alias
 if [[ '' != "${ALIAS}" ]]; then
 	ALIAS_FILE=~/.bash_aliases
-	ALIAS_EXIST=$(grep "alias ${ALIAS}=" "${ALIAS}_FILE")
-	if [[ '' == "${ALIAS}_EXIST" ]];then
-		echo "alias ${ALIAS}='cd ${PROJECT_ROOT}'" >> "${ALIAS}_FILE"
+	# important to use ' || true' here as grep returns with 1
+	# which will lead set -e to terminate immediately
+	ALIAS_EXIST=$(grep -c "alias ${ALIAS}=" "${ALIAS_FILE}" || true)
+	if [[ "${ALIAS_EXIST}" -eq 0 ]]; then
+		echo "alias ${ALIAS}='cd ${PROJECT_ROOT}'" >> "${ALIAS_FILE}"
+	else
+		echo "Alias already exists. Skip..."
 	fi
 fi
 
 # Create MySQL db
 
 if [[ '' == "${MYSQL_HANDLE}" ]]; then
-        exit 0
+	exit 0
 fi
 
 DB_CONF_FILE="${PROJECT_ROOT}/.my.cnf"
