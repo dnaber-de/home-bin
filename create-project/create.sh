@@ -3,7 +3,7 @@
 # Force scrict variable handling
 set -euo pipefail
 
-if [[ -z ${DEPLOY_DEBUG+x} ]]; then
+if [[ ! -z ${DEPLOY_DEBUG+x} ]]; then
 	set -x
 fi
 
