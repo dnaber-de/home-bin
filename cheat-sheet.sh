@@ -4,13 +4,20 @@
 
 # force strict variable handling
 # https://vaneyckt.io/posts/safer_bash_scripts_with_set_euxo_pipefail/
-set -euxo pipefail
+set -euo pipefail
 
 #clears the screen
 clear
 
 # see https://gist.github.com/tvlooy/cbfbdb111a4ebad8b93e
 CURRENT_DIRECTORY=$(dirname $(readlink -f "${0}"))
+
+## Enable debugging output
+# Checks if a variable is set (otherwise set -u would make this fail)
+# see https://stackoverflow.com/a/13864829/2169046
+if [[ ! -z "${DEPLOY_DEBUG+x}" ]]; then
+    set -x
+fi
 
 # system variables
 # allways upper case
@@ -97,5 +104,10 @@ myfunction ~ -bar
 
 # show diffs of two directories in VIM for colored output
 diff -u <(ls -A1 dir1/) <(ls -A1 dir2/) | vim -R -
+
+# run find and execute command on each resulting file
+# see https://unix.stackexchange.com/a/12904/131049
+find . -type f -exec CMD {} + #{} gets substituted with results, + means one CMD call for all results
+find . -type f -exec CMD {} \; # ; means one CMD call per result
 
 exit 0
