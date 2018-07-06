@@ -1,0 +1,6 @@
+#!/usr/bin/env bash
+
+# Proxy script that runs docker always with sudo
+# Alias won't work for docker commands in scripts
+
+sudo -E docker "$@"
