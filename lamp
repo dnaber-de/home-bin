@@ -1,0 +1,33 @@
+#!/usr/bin/env bash
+
+if [[ "${@}" =~ "-h" ]]; then
+	cat <<EOF
+Managing LAMP services
+
+USAGE
+	lamp [up|down|status] [-h]
+
+EOF
+exit 0
+fi;
+
+case "${1}" in
+"start" | "up")
+	sudo service apache2 start
+	sudo service mysql start
+	;;
+"stop" | "down")
+	sudo service apache2 stop
+	sudo service mysql stop
+	;;
+"status")
+	sudo service apache2 status
+	sudo service mysql status
+	;;
+*)
+	echo "Unknown argument ${1} see -h for help"
+	exit 1
+esac
+
+
+	
