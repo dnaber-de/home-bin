@@ -110,4 +110,14 @@ diff -u <(ls -A1 dir1/) <(ls -A1 dir2/) | vim -R -
 find . -type f -exec CMD {} + #{} gets substituted with results, + means one CMD call for all results
 find . -type f -exec CMD {} \; # ; means one CMD call per result
 
+# parallel execution of commands in a loop
+N=4
+i=0
+
+for URL in $(wp site list --field=url ); do
+   ((i=i%N)); ((i++==0)) && wait
+   wp "$@" --url="$URL" &
+done
+wait
+
 exit 0
