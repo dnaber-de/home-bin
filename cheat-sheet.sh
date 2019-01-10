@@ -111,6 +111,7 @@ find . -type f -exec CMD {} + #{} gets substituted with results, + means one CMD
 find . -type f -exec CMD {} \; # ; means one CMD call per result
 
 # parallel execution of commands in a loop
+# see https://unix.stackexchange.com/a/216475/131049
 N=4
 i=0
 
