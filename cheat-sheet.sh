@@ -121,4 +121,13 @@ for URL in $(wp site list --field=url ); do
 done
 wait
 
+## UTF-8 multibyte sequence
+# +-------------------------------------+--------------------------------+
+# | 0xxxxxxx                            | ASCII-Zeichen                  |
+# | 110xxxxx 10xxxxxx                   | Unicode U+00080 bis U+007ff    |
+# | 1110xxxx 10xxxxxx 10xxxxxx          | Unicode U+00800 bis U+0ffff    |
+# | 11110xxx 10xxxxxx 10xxxxxx 10xxxxxx | Unicode U+10000 bis U+1ffff    |
+# +-------------------------------------+--------------------------------+
+##
+
 exit 0
