@@ -1,6 +1,8 @@
-#
-# some scripting test
-#
+#!/usr/bin/env bash
+
+####################
+# BASH CHEAT SHEET #
+####################
 
 # force strict variable handling
 # https://vaneyckt.io/posts/safer_bash_scripts_with_set_euxo_pipefail/
@@ -10,7 +12,7 @@ set -euo pipefail
 clear
 
 # see https://gist.github.com/tvlooy/cbfbdb111a4ebad8b93e
-CURRENT_DIRECTORY=$(dirname $(readlink -f "${0}"))
+CURRENT_DIRECTORY=$(dirname "$(readlink -f "${0}")")
 
 ## Enable debugging output
 # Checks if a variable is set (otherwise set -u would make this fail)
