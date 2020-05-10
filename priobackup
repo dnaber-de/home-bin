@@ -1,0 +1,68 @@
+#!/usr/bin/env bash
+
+# create backups on /media/david/wppassport/1404
+
+# force strict variable handling (declaration)
+set -euo pipefail
+
+BACKUP_DIR="/media/david/Data"
+CURRENT_WD=$(pwd)
+#CURRENT_DIR=$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )
+
+# check if the backup device is available
+if [[ ! -d "${BACKUP_DIR}" ]]; then
+	echo "Error: Backup device not found"
+	exit 1
+fi
+
+if [[ ! -d ~/bak ]]; then
+	echo "Creating ~/bak directory"
+	mkdir ~/bak
+fi
+
+echo "Building ~/packages.list …"
+dpkg --get-selections | awk '!/deinstall|purge|hold/ {print $1}' > ~/bak/packages.list
+
+echo "Building ~/sources.list …"
+find /etc/apt/sources.list* -type f -name '*.list' \
+	-exec bash -c "echo -e \"\n## \$1 \";grep \"^[[:space:]]*[^#[:space:]]\" \${1}" _ {} \; \
+	> ~/bak/sources.list
+
+if [[ ! -d "${BACKUP_DIR}/home/david/bak" ]]; then
+        mkdir -p "${BACKUP_DIR}/home/david/bak" && chown david:david "${BACKUP_DIR}/home/david/bak"
+fi
+
+rsync -a --delete /home/david/bak/ "${BACKUP_DIR}/home/david/bak/"
+
+##
+# Backing up /home/david
+#
+if [[ ! -d "${BACKUP_DIR}/home/david/Dokumente/Zugänge" ]]; then
+	mkdir -p "${BACKUP_DIR}/home/david/Dokumente/Zugänge" && chown david:david "${BACKUP_DIR}/home/david/Dokumente/Zugänge"
+fi
+
+echo "Start backup /home/david …"
+rsync -a /home/david/Dokumente/Zugänge/ "${BACKUP_DIR}/home/david/Dokumente/Zugänge/"
+
+##
+# Backing up /etc
+#
+if [[ ! -d "${BACKUP_DIR}/etc" ]]; then
+        mkdir -p "${BACKUP_DIR}/etc" && chown david:david "${BACKUP_DIR}/etc"
+fi
+
+rsync -a --delete /etc/ "${BACKUP_DIR}/etc/"
+
+##
+# Backing up profile data
+#
+if [[ ! -d "${BACKUP_DIR}/home/david/.mozilla" ]]; then
+        mkdir -p "${BACKUP_DIR}/home/david/.mozilla" && chown david:david "${BACKUP_DIR}/home/david/.mozilla"
+fi
+
+# cd to /home to take /home/.rsync-filter into account
+cd /home
+
+rsync -aF --delete /home/david/.mozilla/ "${BACKUP_DIR}/home/david/.mozilla/"
+
+cd "$CURRENT_WD"
