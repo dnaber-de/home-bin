@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-# create backups on /media/david/wppassport/1404
+# create backups on /media/david/wppassport/1804
 
 # force strict variable handling (declaration)
 set -euo pipefail
