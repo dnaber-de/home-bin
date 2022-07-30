@@ -1,6 +1,0 @@
-#!/usr/bin/env bash
-
-# Proxy script that runs docker-compose alway with sudo
-# Alias won't work as commands in scripts
-
-sudo -E /usr/local/bin/docker-compose "$@"

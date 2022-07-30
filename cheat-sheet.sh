@@ -8,6 +8,11 @@
 # https://vaneyckt.io/posts/safer_bash_scripts_with_set_euxo_pipefail/
 set -euo pipefail
 
+# load variables from .env file
+set -a
+source .env
+set +a 
+
 #clears the screen
 clear
 
@@ -131,5 +136,19 @@ wait
 # | 11110xxx 10xxxxxx 10xxxxxx 10xxxxxx | Unicode U+10000 bis U+1ffff    |
 # +-------------------------------------+--------------------------------+
 ##
+
+## looping over each line in a file
+## https://unix.stackexchange.com/a/580545/131049
+while IFS='' read -r LINE || [ -n "${LINE}" ]; do
+    echo "processing line: ${LINE}"
+done < /path/to/input/file.txt
+
+
+##
+#  using argument of last command in shell history
+# https://unix.stackexchange.com/q/271659/131049
+
+# $_ expands to the last argument whereas 
+# !$ expands to the last word of the last command in history
 
 exit 0
